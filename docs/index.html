@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+	<meta charset="utf-8" />
+	<title>Finitech Map Editor</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+<h1>Finitech Map Editor</h1>
+
+<div>
+    <label for="n-rows"> Rows:</label> <input id="n-rows" type="number" value="5" />
+</div>
+<br />
+<div>
+    <label for="n-cols"> Columns: </label> <input id="n-cols" type="number" value="10" />
+</div>
+<div>
+    <button onclick="generate()">Generate</button>
+</div>
+<div>
+    <button onclick="dump()">Dump</button>
+</div>
+
+<hr />
+
+<div id="grid">
+
+</div>
+
+<hr />
+
+<h2>Legend</h2>
+<div><div class="tile road" style="display: inline-block"></div> Road</div>
+<div><div class="tile park" style="display: inline-block"></div> Parking Space</div>
+<div><div class="tile dropoff" style="display: inline-block"></div> Dropoff Space</div>
+<div><div class="tile pickup" style="display: inline-block"></div> Pickup Space</div>
+
+<h2>Output</h2>
+
+<h3>objects</h3>
+<textarea id="objects"></textarea>
+
+<h3>predicates</h3>
+<textarea id="predicates"></textarea>
+
+
+<script src="main.js"></script>
+</body>
+</html>
