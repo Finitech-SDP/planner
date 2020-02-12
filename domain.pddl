@@ -36,7 +36,7 @@
         (AwaitingOwner ?ht - hubTile)
 
         ;; ?a IsToTheLeftOfOf/IsAbove ?b
-        (IsToTheLeftOfOf ?a - tile ?b - tile)
+        (IsToTheLeftOf ?a - tile ?b - tile)
         (IsAbove ?a - tile ?b - tile)
 
         (IsAt ?m - dynamic ?t - tile)
