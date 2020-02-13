@@ -113,7 +113,7 @@ function dumpProblem() {
     for (let r = 0; r < nRows; r++) {
         for (let c = 0; c < nCols; c++) {
             const tile = document.getElementById(`R${r}C${c}`);
-            tiles += `        (R${r}C${c} - ${getType(tile)})\n`;
+            tiles += `        R${r}C${c} - ${getType(tile)}\n`;
             if (r > 0)
                 aboves += `        (IsAbove R${r - 1}C${c} R${r}C${c})\n`;
             if (c > 0)
