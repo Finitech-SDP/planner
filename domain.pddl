@@ -31,7 +31,7 @@
 
         ;; Tha Car is waiting to be picked up by the owner
         ;; TODO: put car here?
-        (AwaitingOwner ?c - car)
+        (AwaitingDelivery ?c - car)
 
         ;; ?a IsToTheLeftOfOf/IsAbove ?b
         (IsToTheLeftOf ?a - tile ?b - tile)
@@ -128,7 +128,7 @@
             (IsToTheLeftOf ?t ?f)
             (IsCarrying ?r ?c)
 
-            (AwaitingOwner ?c)
+            (AwaitingDelivery ?c)
         )
         :effect (and
             (not (IsAt ?r ?f))
@@ -137,7 +137,7 @@
             (not (IsCarrying ?r ?c))
             (IsAt ?c ?t)
 
-            (not (AwaitingOwner ?c))
+            (not (AwaitingDelivery ?c))
         )
     )
 
@@ -192,7 +192,7 @@
             (not (exists (?c2 - car) (and
                 (IsCarrying ?r ?c2)
             )))
-            (AwaitingOwner ?c)
+            (AwaitingDelivery ?c)
         )
         :effect (and
             (not (IsAt ?r ?f))
@@ -212,7 +212,7 @@
             (not (exists (?c2 - car) (and
                 (IsCarrying ?r ?c2)
             )))
-            (AwaitingOwner ?c)
+            (AwaitingDelivery ?c)
         )
         :effect (and
             (not (IsAt ?r ?f))
