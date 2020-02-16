@@ -128,6 +128,8 @@
             (IsToTheLeftOf ?t ?f)
             (IsCarrying ?r ?c)
 
+            (not (exists (?c2 - car) (IsAt ?c2 ?t)))
+
             (AwaitingDelivery ?c)
         )
         :effect (and
