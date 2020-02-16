@@ -1,1 +1,5 @@
 pystache
+matplotlib
+numpy
+opencv-python
+flask

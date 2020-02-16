@@ -1,3 +1,6 @@
 PROBLEM_TEMPLATE_PATH = "../assets/problem.pddl.mustache"
 DOMAIN_PATH = "../assets/domain.pddl"
 PLANNER_PATH = "../siw-then-bfsf"
+IMAGE_PATH = "../assets/mock-image.jpg"
+MAP_PATH = "../assets/map.json"
+COORDINATE_PATH = "../assets/coordinates.json"

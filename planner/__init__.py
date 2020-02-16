@@ -25,7 +25,7 @@ class Planner:
         problem = self.problem_template.render(
             objects=[PddlObject(f"Car{i}", "car") for i, _ in enumerate(cars)],
             init=[
-                     PddlStatement("IsAt", "Robot", f"R{robot.y}C{robot.x}")
+                     PddlStatement("IsAt", "Robot", f"R{int(robot.y)}C{int(robot.x)}")
                  ] + [
                      PddlStatement("IsAt", f"Car{i}", f"R{car.y}C{car.x}")
                      for i, car in enumerate(cars)
@@ -37,6 +37,9 @@ class Planner:
                      PddlStatement("AwaitingDelivery", f"Car{i}")
                      for i, car in enumerate(cars)
                      if car.status == Car.CarStatus.AWAITING_DELIVERY
+                 ] + [
+                     PddlStatement("TemporarilyBlocked", f"R{tile.y}C{tile.x}")
+                     for tile in tiles
                  ],
         )
         return self.__call_planner(self.domain, problem)
