@@ -19,21 +19,16 @@
     )
 
     (:predicates
-        ;; Example:
-        ;; (Contains ?x - object ?c - container)
         (TemporarilyBlocked ?t - tile)
 
         ;; TODO: enforce that one and only one is true at a given time
 
         ;; The Car is waiting to be parked
-        ;; TODO: put car here?
         (AwaitingParking ?c - car)
 
         ;; Tha Car is waiting to be picked up by the owner
-        ;; TODO: put car here?
         (AwaitingDelivery ?c - car)
 
-        ;; ?a IsToTheLeftOfOf/IsAbove ?b
         (IsToTheLeftOf ?a - tile ?b - tile)
         (IsAbove ?a - tile ?b - tile)
 
@@ -43,14 +38,11 @@
     )
 
     ;;;;;; WE ASSUME HORIZONTAL TILES!
-
-    ;;;; Action Template - Delete and fill in own actions ;;;;
     (:action go-left
         :parameters (?r - robot ?f - tile ?t - roadTile)
         :precondition (and
             (IsAt ?r ?f)
             (IsToTheLeftOf ?t ?f)
-            ;; TODO: for blocking space
         )
         :effect (and
             (not (IsAt ?r ?f))
@@ -63,7 +55,6 @@
         :precondition (and
             (IsAt ?r ?f)
             (IsToTheLeftOf ?f ?t)
-            ;; TODO: for blocking space
         )
         :effect (and
             (not (IsAt ?r ?f))
@@ -182,8 +173,6 @@
             (not (AwaitingParking ?c))
         )
     )
-
-    ;;;;
 
     (:action retrieve-car-rightwards
         :parameters (?r - robot ?f - roadTile ?t - parkingTile ?c - car)
