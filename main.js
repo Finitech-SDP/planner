@@ -143,7 +143,10 @@ ${aboves}
     )
 
     (:goal (and
-        {{ goal }}
+        (not (exists (?c - car) (or
+            (AwaitingParking ?c)
+            (AwaitingDelivery   ?c)
+        )))
     ))
 )
 `
