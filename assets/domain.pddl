@@ -140,6 +140,7 @@
             (IsAt ?r ?f)
             (IsToTheLeftOf ?f ?t)
             (IsCarrying ?r ?c)
+            (not (TemporarilyBlocked ?t))
 
             (not (exists (?c2 - car) (IsAt ?c2 ?t)))
         )
@@ -160,6 +161,7 @@
             (IsAt ?r ?f)
             (IsToTheLeftOf ?t ?f)
             (IsCarrying ?r ?c)
+            (not (TemporarilyBlocked ?t))
 
             (not (exists (?c2 - car) (IsAt ?c2 ?t)))
         )
