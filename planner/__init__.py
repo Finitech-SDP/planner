@@ -40,6 +40,7 @@ class Planner:
                  ] + [
                      PddlStatement("TemporarilyBlocked", f"R{tile.y}C{tile.x}")
                      for tile in tiles
+                     if tile.is_temporarily_blocked
                  ],
         )
         return self.__call_planner(self.domain, problem)

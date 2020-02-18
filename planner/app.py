@@ -1,15 +1,36 @@
 from typing import List, Dict, Tuple
 import json
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 import numpy as np
+from PIL import Image
 
 from planner import Planner
 from planner.config import COORDINATE_PATH, MAP_PATH
 from planner.kinds import Car, Robot, Tile
-from planner.detector import getEmptySpaces, captureImage
+from planner.detector import getEmptySpaces, captureImage, annotateEmptySpaces
 
 app = Flask(__name__)
+
+
+@app.route("/emptymap")
+def emptymap():
+    map_ = load_map(MAP_PATH)
+    coordinates = load_coordinates(COORDINATE_PATH)
+
+    image = captureImage()
+    if image is None:
+        return jsonify({
+            "error": "image is None"
+        })
+    result = annotateEmptySpaces(image, coordinates)
+
+    im = Image.fromarray(
+        (255.0 / result.max() * (result - result.min())).astype(np.uint8)
+    )
+    im.save("anan.png")
+
+    return send_file("../anan.png")
 
 
 @app.route("/plan")
@@ -18,11 +39,19 @@ def plan():
     coordinates = load_coordinates(COORDINATE_PATH)
 
     image = captureImage()
+    if image is None:
+        return jsonify({
+            "error": "image is None"
+        })
     is_empty_map = getEmptySpaces(image, coordinates)
 
+    print(is_empty_map)
     for tile in map_:
-        if not is_empty_map.get((tile.x, tile.y), True):
+        if not is_empty_map.get((tile.y, tile.x), True):
             tile.is_temporarily_blocked = True
+
+    for tile in map_:
+        print("~~~ R%dC%d  %s" %(tile.y, tile.x, tile.is_temporarily_blocked))
 
     robot, cars = parse_args(request.args)
 
@@ -34,6 +63,7 @@ def plan():
     )
     return jsonify({
         "plan": plan,
+        "is_empty": {str(k): bool(v) for k,v in is_empty_map.items()}
     })
 
 
@@ -71,5 +101,5 @@ def load_coordinates(path: str) -> Dict[Tuple[int, int], np.ndarray]:
         for k in list(d.keys()):
             v = d[k]
             del d[k]
-            d[tuple(k.split(","))] = np.array(v)
+            d[tuple(int(e) for e in k.split(","))] = np.array(v)
         return d
