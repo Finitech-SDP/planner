@@ -3,6 +3,42 @@
 let nRows = null;
 let nCols = null;
 
+function loadFile(file) {
+    const grid = document.getElementById("grid");
+    grid.innerHTML = "";
+
+    console.log(file);
+    file.text().then(text => {
+        const tiles = JSON.parse(text);
+
+        const nCols = Math.max(...tiles.map(tile => tile.column)) + 1;
+        const nRows = Math.max(...tiles.map(tile => tile.row)) + 1;
+
+        console.log(tiles, nCols, nRows);
+
+        for (let r = 0; r < nRows; r++) {
+            for (let c = 0; c < nCols; c++) {
+                const tile = tiles.filter(tile => tile.row === r && tile.column === c)[0];
+                const child = document.createElement("div");
+
+                child.id = `R${r}C${c}`;
+                child.classList.add("tile", tile.type);
+                child.setAttribute("row", `${r}`);
+                child.setAttribute("col", `${c}`);
+
+                child.addEventListener("click", tileOnClick);
+
+                grid.appendChild(child);
+            }
+        }
+
+        grid.style.gridTemplateColumns = "auto ".repeat(nCols);
+        grid.style.gridTemplateRows = "auto ".repeat(nRows);
+    });
+
+    afterTile();
+}
+
 function generate() {
     nRows = document.getElementById("n-rows").value;
     nCols = document.getElementById("n-cols").value;
@@ -28,17 +64,19 @@ function generate() {
     grid.style.gridTemplateColumns = "auto ".repeat(nCols);
     grid.style.gridTemplateRows = "auto ".repeat(nRows);
 
-    ////
+    afterTile();
+}
+
+
+function afterTile() {
     document.getElementById("generate").setAttribute("disabled", "disabled");
     document.getElementById("n-rows").setAttribute("disabled", "disabled");
     document.getElementById("n-cols").setAttribute("disabled", "disabled");
+    document.getElementById("fileInput").setAttribute("disabled", "disabled");
 
-    console.log("woottt");
     document.getElementById("downloadJson").removeAttribute("disabled");
     document.getElementById("downloadProblem").removeAttribute("disabled");
-
 }
-
 
 function tileOnClick(ev) {
     const tile = ev.target;
@@ -75,8 +113,8 @@ function dumpJson() {
         for (let c = 0; c < nCols; c++) {
             const tile = document.getElementById(`R${r}C${c}`);
             jsonDump.push({
-                x: c,
-                y: r,
+                row: r,
+                column: c,
                 type: getType(tile),
             });
         }

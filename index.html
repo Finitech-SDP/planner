@@ -9,17 +9,21 @@
 <body>
 <header style="margin-bottom: 1em;">
 <h1 style="margin-bottom: 0;">Finitech Map Editor</h1>
-<em>v2020-02-13T13:58</em>
+<em>v2020-02-18T17:02</em>
 </header>
 
+<div>
+    <input id="fileInput" type="file" title="Load map.json" onchange="loadFile(this.files[0])">
+</div>
+<p>
+    OR
+</p>
 <div style="display: flex; align-items: baseline">
     <div>
         <label for="n-rows"> Rows:</label> <input id="n-rows" type="number" value="5"/>
-        &emsp;
     </div>
     <div>
-        <label for="n-cols"> Columns: </label> <input id="n-cols" type="number" value="10"/>
-        &emsp;
+        <label for="n-cols"> Columns: </label> <input id="n-cols" type="number" value="10"/>&emsp;
     </div>
     <div>
         <button id="generate" onclick="generate()">Generate</button>
