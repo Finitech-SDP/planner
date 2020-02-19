@@ -1,6 +1,5 @@
 from typing import Dict, Tuple
 
-import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 
@@ -13,6 +12,10 @@ def drawRect(image, space, colour=(0, 255, 0)):
 
 
 def captureImage():
+    # Enable for debugging
+    # from planner.config import IMAGE_PATH
+    # return cv2.imread(IMAGE_PATH)
+
     cap = cv2.VideoCapture(STREAM_URL)
 
     # Skip the first 120 frames
@@ -43,18 +46,17 @@ def annotateEmptySpaces(image, coordMap: Dict[Tuple[int, int], np.ndarray]):
     return image
 
 
-def getEmptySpaces(image, coordMap: Dict[Tuple[int, int], np.ndarray]) -> Dict[Tuple[int, int], bool]:
+def getEmptySpaces(image, coordinates: Dict[Tuple[int, int], np.ndarray]) -> Dict[Tuple[int, int], bool]:
     """
     :param image:
-    :param coordMap: A dictionary that maps tiles (a tuple of int's) to coordinates from the video stream
-    :param showSpaces:
+    :param coordinates: A dictionary that maps tiles (a tuple of int's) to coordinates from the video stream
     :return: True if empty else False
     """
     results = {}  # type: Dict[Tuple[int, int], bool]
 
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
-    for tile, space in coordMap.items():
+    for tile, space in coordinates.items():
         spaceCropped = (gray[space[0][1]:space[1][1], space[0][0]:space[1][0]])
         if spaceCropped is None:
             raise Exception("coordinates wrong?")
@@ -63,6 +65,3 @@ def getEmptySpaces(image, coordMap: Dict[Tuple[int, int], np.ndarray]) -> Dict[T
         results[tile] = isEmpty
 
     return results
-
-# spaceArray = getEmptySpaces('test.jpeg', showSpaces=True)
-# print(spaceArray)

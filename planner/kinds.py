@@ -10,9 +10,9 @@ class Tile:
         PARKING = enum.auto()
         ROAD = enum.auto()
 
-    def __init__(self, x: int, y: int, type_: "Tile.TileType"):
-        self.x = x
-        self.y = y
+    def __init__(self, row: int, column: int, type_: "Tile.TileType"):
+        self.row = row
+        self.column = column
         self.type = type_
         self.is_temporarily_blocked = False
 
@@ -24,7 +24,7 @@ class Tile:
             "parking": cls.TileType.PARKING,
             "road": cls.TileType.ROAD
         }
-        return cls(dict_["x"], dict_["y"], type_map[dict_["type"]])
+        return cls(dict_["row"], dict_["column"], type_map[dict_["type"]])
 
 
 class Car:
@@ -34,13 +34,13 @@ class Car:
         AWAITING_DELIVERY = enum.auto()
         AWAITING_PARKING = enum.auto()
 
-    def __init__(self, x: int, y: int, status: "Car.CarStatus"):
-        self.x = x
-        self.y = y
+    def __init__(self, row: int, column: int, status: "Car.CarStatus"):
+        self.row = row
+        self.column = column
         self.status = status
 
 
 class Robot:
-    def __init__(self, x: float, y: float):
-        self.x = x
-        self.y = y
+    def __init__(self, row: float, column: float):
+        self.row = row
+        self.column = column

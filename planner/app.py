@@ -1,7 +1,9 @@
 from typing import List, Dict, Tuple
 import json
+import io
 
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, jsonify, request, Response, make_response
+from werkzeug.wsgi import FileWrapper
 import numpy as np
 from PIL import Image
 
@@ -13,28 +15,42 @@ from planner.detector import getEmptySpaces, captureImage, annotateEmptySpaces
 app = Flask(__name__)
 
 
+@app.route("/")
+def index_view():
+    return make_response(""" \
+You probably meant one of the following:
+<ul>
+    <li><a href="/emptymap">/emptymap</a> &mdash; See the annotated image</li>
+    <li><a href="/plan">/plan</a> &mdash; Run the planner
+        <b>GET Parameters</b>
+        <ul>
+            <li><b><tt>robot</tt></b><tt>=row,column</tt> &ndash; The position of the Robot. {1}</li>
+            <li><b><tt>parkCar</tt></b><tt>=row,column</tt> &ndash; The position of a Car to be parked. [1, ∞)</li>
+            <li><b><tt>deliverCar</tt></b><tt>=row,column</tt> &ndash; The position of a Car to be delivered. [1, ∞)</li>
+        </ul>
+    </li>
+</ul>
+""")
+
+
 @app.route("/emptymap")
-def emptymap():
-    map_ = load_map(MAP_PATH)
+def emptymap_view():
     coordinates = load_coordinates(COORDINATE_PATH)
-
     image = captureImage()
-    if image is None:
-        return jsonify({
-            "error": "image is None"
-        })
     result = annotateEmptySpaces(image, coordinates)
-
     im = Image.fromarray(
         (255.0 / result.max() * (result - result.min())).astype(np.uint8)
     )
-    im.save("anan.png")
 
-    return send_file("../anan.png")
+    bio = io.BytesIO()
+    im.save(bio, "png")
+    bio.seek(0)
+    w = FileWrapper(bio)
+    return Response(w, mimetype="image/png", direct_passthrough=True)
 
 
 @app.route("/plan")
-def plan():
+def plan_view():
     map_ = load_map(MAP_PATH)
     coordinates = load_coordinates(COORDINATE_PATH)
 
@@ -45,13 +61,9 @@ def plan():
         })
     is_empty_map = getEmptySpaces(image, coordinates)
 
-    print(is_empty_map)
     for tile in map_:
-        if not is_empty_map.get((tile.y, tile.x), True):
+        if not is_empty_map.get((tile.row, tile.column), True):
             tile.is_temporarily_blocked = True
-
-    for tile in map_:
-        print("~~~ R%dC%d  %s" %(tile.y, tile.x, tile.is_temporarily_blocked))
 
     robot, cars = parse_args(request.args)
 
@@ -63,17 +75,17 @@ def plan():
     )
     return jsonify({
         "plan": plan,
-        "is_empty": {str(k): bool(v) for k,v in is_empty_map.items()}
+        "is_empty": {f"R{k[0]}C{k[1]}": bool(v) for k, v in is_empty_map.items()}
     })
 
 
 def parse_args(args):
-    robot_x, robot_y = request.args["robot"].split(",")
-    park_cars = [c.split(",") for c in request.args.getlist("parkCar")]
-    deliver_cars = [c.split(",") for c in request.args.getlist("deliverCar")]
+    robot_row, robot_column = args["robot"].split(",")
+    park_cars = [c.split(",") for c in args.getlist("parkCar")]
+    deliver_cars = [c.split(",") for c in args.getlist("deliverCar")]
 
     return (
-        Robot(float(robot_x), float(robot_y)),
+        Robot(float(robot_row), float(robot_column)),
         [
             Car(int(t[0]), int(t[1]), Car.CarStatus.AWAITING_PARKING)
             for t in park_cars
@@ -97,9 +109,8 @@ def load_map(map_path: str) -> List[Tile]:
 
 def load_coordinates(path: str) -> Dict[Tuple[int, int], np.ndarray]:
     with open(path) as f:
-        d = json.load(f)
-        for k in list(d.keys()):
-            v = d[k]
-            del d[k]
-            d[tuple(int(e) for e in k.split(","))] = np.array(v)
-        return d
+        list_ = json.load(f)
+        return {
+            (e["row"], e["column"]): np.array(e["coordinates"])
+            for e in list_
+        }

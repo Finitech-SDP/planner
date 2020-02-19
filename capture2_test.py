@@ -8,7 +8,7 @@ if __name__ == '__main__':
 
     c = 0
     while cap.grab() and cap.isOpened() and c < 120:
-        ok, img = cap.retrieve()
+        ok, _ = cap.retrieve()
         if not ok:
             break
 

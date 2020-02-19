@@ -5,3 +5,4 @@ opencv-python
 flask
 gunicorn
 pillow
+werkzeug

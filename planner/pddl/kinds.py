@@ -1,6 +1,3 @@
-from typing import Iterable
-
-
 class PddlObject:
     def __init__(self, name: str, type_: str):
         self.name = name
@@ -11,7 +8,7 @@ class PddlObject:
 
 
 class PddlStatement:
-    def __init__(self, predicate: str, *args: Iterable[str]):
+    def __init__(self, predicate: str, *args: str):
         self.predicate = predicate
         self.args = args
 
