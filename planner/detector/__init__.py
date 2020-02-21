@@ -1,9 +1,11 @@
 from typing import Dict, Tuple
 
+import sys
+
 import numpy as np
 import cv2
 
-from planner.config import STREAM_URL
+from planner.config import STREAM_URL, IMAGE_PATH
 
 
 def drawRect(image, space, colour=(0, 255, 0)):
@@ -13,8 +15,8 @@ def drawRect(image, space, colour=(0, 255, 0)):
 
 def captureImage():
     # Enable for debugging
-    # from planner.config import IMAGE_PATH
-    # return cv2.imread(IMAGE_PATH)
+    if sys.flags.debug:
+        return cv2.imread(IMAGE_PATH)
 
     cap = cv2.VideoCapture(STREAM_URL)
 

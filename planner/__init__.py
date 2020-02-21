@@ -42,6 +42,10 @@ class Planner:
                      for tile in tiles
                      if tile.is_temporarily_blocked
                  ],
+            goal=[
+                     # Robot shall be back at where it has started
+                     PddlStatement("IsAt", "Robot", f"R{int(robot.row)}C{int(robot.column)}")
+            ]
         )
         return self.__call_planner(self.domain, problem)
 

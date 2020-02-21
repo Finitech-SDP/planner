@@ -11,10 +11,11 @@ class ProblemTemplate:
             self.template = f.read()
             self.renderer = pystache.Renderer()
 
-    def render(self, objects: List[PddlObject], init: List[PddlStatement]) -> str:
+    def render(self, objects: List[PddlObject], init: List[PddlStatement], goal: List[PddlStatement]) -> str:
         return pystache.render(self.template, {
             "objects": self.__concat_pretty(str(obj) for obj in objects),
             "init": self.__concat_pretty(str(i) for i in init),
+            "goal": self.__concat_pretty(str(i) for i in goal),
         })
 
     @staticmethod
