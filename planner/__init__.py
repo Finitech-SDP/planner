@@ -1,7 +1,7 @@
 """
 Author: Bora M. Alper <s1739976@ed.ac.uk>
 """
-from typing import List
+from typing import List, Optional
 
 import contextlib
 import os
@@ -21,7 +21,7 @@ class Planner:
         with open(DOMAIN_PATH) as f:
             self.domain = f.read()
 
-    def plan(self, tiles: List[Tile], cars: List[Car], robot: Robot) -> List[str]:
+    def plan(self, tiles: List[Tile], cars: List[Car], robot: Robot) -> Optional[List[str]]:
         problem = self.problem_template.render(
             objects=[PddlObject(f"Car{i}", "car") for i, _ in enumerate(cars)],
             init=[
@@ -50,7 +50,7 @@ class Planner:
         return self.__call_planner(self.domain, problem)
 
     @staticmethod
-    def __call_planner(domain: str, problem: str) -> List[str]:
+    def __call_planner(domain: str, problem: str) -> Optional[List[str]]:
         domain_f = None
         problem_f = None
         plan_f = None
@@ -80,7 +80,7 @@ class Planner:
             print(file=sys.stderr, flush=True)
             print(problem, file=sys.stderr, flush=True)
             print(file=sys.stderr, flush=True)
-            raise exc
+            return None
         finally:
             with contextlib.suppress(Exception):
                 os.unlink("execution.details")
