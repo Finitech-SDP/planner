@@ -36,8 +36,8 @@ def captureImage():
     return img
 
 
-def annotateEmptySpaces(image, coordMap: Dict[Tuple[int, int], np.ndarray]):
-    is_empty_map = getEmptySpaces(image, coordMap)
+def annotateEmptySpaces(image, coordMap: Dict[Tuple[int, int], np.ndarray], thresh: float):
+    is_empty_map = getEmptySpaces(image, coordMap, thresh)
 
     for tile, space in coordMap.items():
         if is_empty_map[tile]:
@@ -48,8 +48,9 @@ def annotateEmptySpaces(image, coordMap: Dict[Tuple[int, int], np.ndarray]):
     return image
 
 
-def getEmptySpaces(image, coordinates: Dict[Tuple[int, int], np.ndarray]) -> Dict[Tuple[int, int], bool]:
+def getEmptySpaces(image, coordinates: Dict[Tuple[int, int], np.ndarray], thresh: float) -> Dict[Tuple[int, int], bool]:
     """
+    :param thresh:
     :param image:
     :param coordinates: A dictionary that maps tiles (a tuple of int's) to coordinates from the video stream
     :return: True if empty else False
@@ -63,7 +64,8 @@ def getEmptySpaces(image, coordinates: Dict[Tuple[int, int], np.ndarray]) -> Dic
         if spaceCropped is None:
             raise Exception("coordinates wrong?")
         edged = cv2.Canny(spaceCropped, 150, 200)
-        isEmpty = np.sum(edged) <= 100
+        area = edged.size
+        isEmpty = np.sum(edged / 255) / area <= thresh
         results[tile] = isEmpty
 
     return results

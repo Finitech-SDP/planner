@@ -13,6 +13,7 @@ from planner.kinds import Car, Robot, Tile
 from planner.detector import getEmptySpaces, captureImage, annotateEmptySpaces
 
 app = Flask(__name__)
+THRESHOLD = 0.01
 
 
 @app.route("/")
@@ -37,7 +38,7 @@ You probably meant one of the following:
 def emptymap_view():
     coordinates = load_coordinates(COORDINATE_PATH)
     image = captureImage()
-    result = annotateEmptySpaces(image, coordinates)
+    result = annotateEmptySpaces(image, coordinates, THRESHOLD)
     im = Image.fromarray(
         (255.0 / result.max() * (result - result.min())).astype(np.uint8)
     )
@@ -59,7 +60,7 @@ def plan_view():
         return jsonify({
             "error": "image is None"
         })
-    is_empty_map = getEmptySpaces(image, coordinates)
+    is_empty_map = getEmptySpaces(image, coordinates, THRESHOLD)
 
     for tile in map_:
         if not is_empty_map.get((tile.row, tile.column), True):
