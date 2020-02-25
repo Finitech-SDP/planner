@@ -44,9 +44,11 @@ class Planner:
                  ],
             goal=[
                      # Robot shall be back at where it has started
-                     PddlStatement("IsAt", "Robot", f"R{int(robot.row)}C{int(robot.column)}")
+                     PddlStatement("IsAt", "Robot", f"R0C2")
             ]
         )
+        print("========\n", problem)
+
         return self.__call_planner(self.domain, problem)
 
     @staticmethod
